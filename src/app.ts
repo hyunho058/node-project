@@ -1,7 +1,9 @@
 import express, { Express, Request, Response } from "express";
+import { PrismaClient } from '@prisma/client'
 
 const app: Express = express();
 const port = 8080;
+const prisma = new PrismaClient()
 
 type Data = {
     name: string;
@@ -20,6 +22,17 @@ app.get('/', (req: Request, res: Response) => {
 app.get('/test', (req: Request, res: Response) => {
     res.send(sendData);
     // res.send('Typescript + Node.js + Express Server');
+});
+
+app.get('/posts', async (req, res) => {
+    const posts = await prisma.post.findMany();
+    res.json(posts);
+});
+
+app.get('/users/:userId', async (req, res) => {
+    const userId = req.params.userId;
+    const users = await prisma.user.findMany();
+    res.json(users);
 });
 
 app.listen(port, () => {
