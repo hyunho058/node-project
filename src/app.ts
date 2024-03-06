@@ -1,38 +1,14 @@
 import express, { Express, Request, Response } from "express";
-import { PrismaClient } from '@prisma/client'
+import userRoutes from "./api/user/routes/UserRoutes";
 
 const app: Express = express();
 const port = 8080;
-const prisma = new PrismaClient()
 
-type Data = {
-    name: string;
-    age: number;
-};
-
-const sendData: Data = {
-    name: "name",
-    age: 10,
-};
+app.use(express.json());
+app.use("/users", userRoutes)
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Node.js + Express + Typescript');
-});
-
-app.get('/test', (req: Request, res: Response) => {
-    res.send(sendData);
-    // res.send('Typescript + Node.js + Express Server');
-});
-
-app.get('/posts', async (req, res) => {
-    const posts = await prisma.post.findMany();
-    res.json(posts);
-});
-
-app.get('/users/:userId', async (req, res) => {
-    const userId = req.params.userId;
-    const users = await prisma.user.findMany();
-    res.json(users);
 });
 
 app.listen(port, () => {
